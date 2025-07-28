@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course List - E-Learning</title>
+    <style>
+        /* General Styles - Consistent across all pages */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background-color: var(--salmon-50); /* Light salmon background */
+        }
+
+        /* Python/Salmon Color Palette - Consistent across all pages */
+        :root {
+            --salmon-light: #fef7f0;
+            --salmon-50: #fff4ed;
+            --salmon-100: #ffe6d5;
+            --salmon-200: #fed7b7;
+            --salmon-300: #fdba74;
+            --salmon-400: #fb923c;
+            --salmon-500: #f97316;
+            --salmon-600: #ea580c;
+            --salmon-700: #c2410c;
+            --salmon-800: #9a3412;
+            --salmon-900: #7c2d12;
+            --python-blue: #306998;
+            --python-yellow: #ffd43b;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header - Consistent across all pages */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(249, 115, 22, 0.1);
+            border-bottom: 2px solid var(--salmon-100);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--salmon-600);
+            text-decoration: none;
+        }
+
+        /* Navigation buttons (for back and forth) */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--salmon-500), var(--salmon-600));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--salmon-600), var(--salmon-700));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--salmon-100);
+            color: var(--salmon-700);
+            border: 1px solid var(--salmon-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--salmon-200);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--salmon-600);
+            border: 1px solid var(--salmon-300);
+        }
+
+        .btn-ghost:hover {
+            background: var(--salmon-50);
+            border-color: var(--salmon-400);
+        }
+
+
+        /* Course List Specific Styles */
+        .course-list-page {
+            padding: 30px 0;
+        }
+
+        .category-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--salmon-800);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            border: 1px solid var(--salmon-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--salmon-800);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-bar input[type="text"]::placeholder {
+            color: var(--salmon-400);
+        }
+
+        .search-bar input[type="text"]:focus {
+            border-color: var(--salmon-500);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+
+        /* Simplified Course List Container */
+        .course-list-container {
+            list-style: none; /* Remove default list bullets */
+            padding: 0;
+            margin: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.05);
+            border: 1px solid var(--salmon-100);
+            overflow: hidden; /* Ensures rounded corners apply to content */
+        }
+
+        .course-list-container li {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--salmon-50);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .course-list-container li:last-child {
+            border-bottom: none; /* No border for the last item */
+        }
+
+        .course-list-container li:hover {
+            background-color: var(--salmon-light);
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--salmon-800);
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .course-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--salmon-700);
+        }
+
+        .course-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .course-meta strong {
+            color: var(--salmon-800);
+            font-weight: 600;
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .pagination-controls button {
+            padding: 8px 15px;
+            border: 1px solid var(--salmon-300);
+            border-radius: 6px;
+            background-color: white;
+            color: var(--salmon-700);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: var(--salmon-100);
+            border-color: var(--salmon-400);
+        }
+
+        .pagination-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-controls span {
+            font-size: 1rem;
+            color: var(--salmon-800);
+            font-weight: 500;
+        }
+
+
+        /* Empty State - Consistent with previous pages */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--salmon-600);
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .category-title {
+                font-size: 2rem;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-bar input[type="text"] {
+                max-width: 90%;
+            }
+
+            .course-list-container li {
+                padding: 10px 15px;
+            }
+
+            .course-title {
+                font-size: 1rem;
+            }
+
+            .course-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">🎓 E-Learning</a>
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn btn-ghost">Home</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Course List Page Content -->
+    <div class="course-list-page">
+        <div class="container">
+            <h1 class="category-title" id="page-category-title">All Courses</h1>
+
+            <div class="search-bar">
+                <input type="text" id="course-search-input" placeholder="Search courses...">
+                <button id="course-search-btn" class="btn btn-primary">Search</button>
+            </div>
+
+            <ol class="course-list-container" id="course-list-container">
+                <!-- Course list items will be dynamically populated here -->
+            </ol>
+
+            <div class="pagination-controls">
+                <button id="prev-page-btn" disabled>Previous</button>
+                <span id="page-info">Page 1 of 1</span>
+                <button id="next-page-btn" disabled>Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCourses = []; // All parsed courses from website_dataset.csv
+        let filteredCourses = []; // Courses after search/filter
+        const coursesPerPage = 15;
+        let currentPage = 1;
+
+        // Function to parse CSV data
+        async function parseCSV(csvString) {
+            const lines = csvString.trim().split('\n');
+            const headers = lines[0].split(',').map(header => header.trim()); // Get headers
+            const courses = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                let line = lines[i];
+                const fields = [];
+                let inQuote = false;
+                let currentField = '';
+
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    if (char === '"') {
+                        if (j + 1 < line.length && line[j+1] === '"') { // Handle escaped double quote
+                            currentField += '"';
+                            j++; // Skip the next quote
+                        } else {
+                            inQuote = !inQuote;
+                        }
+                    } else if (char === ',' && !inQuote) {
+                        fields.push(currentField);
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+                fields.push(currentField); // Add the last field
+
+                if (fields.length === headers.length) {
+                    const course = {};
+                    headers.forEach((header, index) => {
+                        let value = fields[index];
+                        // Convert to appropriate types
+                        if (header === 'id' || header === 'num_subscribers' || header === 'num_reviews' || header === 'num_comments' || header === 'num_lectures' || header === 'content_length_min') {
+                            course[header] = parseInt(parseFloat(value));
+                        } else if (header === 'avg_rating' || header === 'price') {
+                            course[header] = parseFloat(value);
+                        } else if (header === 'is_paid') {
+                            course[header] = value === 'True';
+                        } else {
+                            course[header] = value;
+                        }
+                    });
+                    courses.push(course);
+                }
+            }
+            return courses;
+        }
+
+        // Create a single course list item HTML element
+        function createCourseListItem(course, index) {
+            const listItem = document.createElement('li');
+            // Link to course-detail.html with the course ID as a URL parameter
+            listItem.innerHTML = `
+                <h3 class="course-title">${(index + 1) + ((currentPage - 1) * coursesPerPage)}. <a href="course-detail.html?id=${course.id}">${course.title}</a></h3>
+                <div class="course-meta">
+                    <span>⭐ <strong>Rating:</strong> ${course.avg_rating ? course.avg_rating.toFixed(1) : 'N/A'}</span>
+                    <span>By <strong>${course.instructor_name || 'Unknown'}</strong></span>
+                </div>
+            `;
+            return listItem;
+        }
+
+        // Render the current page of courses
+        function renderCourses() {
+            const container = document.getElementById('course-list-container');
+            container.innerHTML = ''; // Clear previous courses
+
+            const startIndex = (currentPage - 1) * coursesPerPage;
+            const endIndex = startIndex + coursesPerPage;
+            const coursesToDisplay = filteredCourses.slice(startIndex, endIndex);
+
+            if (coursesToDisplay.length === 0) {
+                const emptyStateDiv = document.createElement('div');
+                emptyStateDiv.className = 'empty-state';
+                emptyStateDiv.innerHTML = `
+                    <div class="empty-icon">🔍</div>
+                    <h3>No courses found</h3>
+                    <p>Try adjusting your search or filters.</p>
+                `;
+                container.appendChild(emptyStateDiv);
+            } else {
+                coursesToDisplay.forEach((course, index) => {
+                    const courseElement = createCourseListItem(course, index);
+                    container.appendChild(courseElement);
+                });
+            }
+            updatePaginationControls();
+        }
+
+        // Update pagination buttons and info text
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+            document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            document.getElementById('prev-page-btn').disabled = currentPage === 1;
+            document.getElementById('next-page-btn').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Filter courses based on search term or category from URL
+        function filterCoursesFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+            const category = urlParams.get('category');
+            const pageTitleElement = document.getElementById('page-category-title');
+
+            if (searchTerm) {
+                pageTitleElement.textContent = `Search Results for "${searchTerm}"`;
+                const lowerCaseSearchTerm = searchTerm.toLowerCase();
+                filteredCourses = allCourses.filter(course =>
+                    (course.title && course.title.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    (course.instructor_name && course.instructor_name.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    (course.headline && course.headline.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    (course.category && course.category.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    (course.subcategory && course.subcategory.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    (course.topic && course.topic.toLowerCase().includes(lowerCaseSearchTerm))
+                );
+                document.getElementById('course-search-input').value = searchTerm; // Pre-fill search bar
+            } else if (category) {
+                pageTitleElement.textContent = `${category} Courses`;
+                const lowerCaseCategory = category.toLowerCase();
+                filteredCourses = allCourses.filter(course =>
+                    (course.category && course.category.toLowerCase() === lowerCaseCategory)
+                );
+            } else {
+                pageTitleElement.textContent = `All Courses`;
+                filteredCourses = [...allCourses]; // Show all if no specific filter
+            }
+
+            currentPage = 1; // Reset to first page on new filter
+            renderCourses();
+        }
+
+        // Event listener for search button on this page
+        document.getElementById('course-search-btn').addEventListener('click', () => {
+            const searchTerm = document.getElementById('course-search-input').value;
+            // Update URL to reflect new search, then re-filter
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('search', searchTerm);
+            newUrl.searchParams.delete('category'); // Remove category if searching
+            window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+            filterCoursesFromURL();
+        });
+
+        // Event listener for search input (on Enter key) on this page
+        document.getElementById('course-search-input').addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                document.getElementById('course-search-btn').click(); // Trigger search button click
+            }
+        });
+
+        // Event listeners for pagination buttons
+        document.getElementById('prev-page-btn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderCourses();
+            }
+        });
+
+        document.getElementById('next-page-btn').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderCourses();
+            }
+        });
+
+        // Initial setup when the page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Fetch the website_dataset.csv file
+                const response = await fetch('website_dataset.csv');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const csvText = await response.text();
+                allCourses = await parseCSV(csvText);
+
+                // Sort "The Secrets to Wealth" to the top, if present
+                const secretsToWealthId = 51942;
+                const secretsToWealthIndex = allCourses.findIndex(course => course.id === secretsToWealthId);
+                if (secretsToWealthIndex > -1) {
+                    const secretsToWealthCourse = allCourses.splice(secretsToWealthIndex, 1)[0];
+                    allCourses.unshift(secretsToWealthCourse);
+                }
+
+                filterCoursesFromURL(); // Apply initial filter from URL parameters
+            } catch (error) {
+                console.error("Error loading or parsing website_dataset.csv:", error);
+                const container = document.getElementById('course-list-container');
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <h3>Error loading courses</h3>
+                        <p>Please ensure 'website_dataset.csv' is in the same directory.</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Detail - E-Learning</title>
+    <style>
+        /* General Styles - Consistent across all pages */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background-color: var(--salmon-50); /* Light salmon background */
+        }
+
+        /* Python/Salmon Color Palette - Consistent across all pages */
+        :root {
+            --salmon-light: #fef7f0;
+            --salmon-50: #fff4ed;
+            --salmon-100: #ffe6d5;
+            --salmon-200: #fed7b7;
+            --salmon-300: #fdba74;
+            --salmon-400: #fb923c;
+            --salmon-500: #f97316;
+            --salmon-600: #ea580c;
+            --salmon-700: #c2410c;
+            --salmon-800: #9a3412;
+            --salmon-900: #7c2d12;
+            --python-blue: #306998;
+            --python-yellow: #ffd43b;
+        }
+
+        .container {
+            max-width: 960px; /* Adjusted for a more centered, focused look */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header - Consistent across all pages */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(249, 115, 22, 0.1);
+            border-bottom: 2px solid var(--salmon-100);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--salmon-600);
+            text-decoration: none;
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--salmon-500), var(--salmon-600));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--salmon-600), var(--salmon-700));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--salmon-100);
+            color: var(--salmon-700);
+            border: 1px solid var(--salmon-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--salmon-200);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--salmon-600);
+            border: 1px solid var(--salmon-300);
+        }
+
+        .btn-ghost:hover {
+            background: var(--salmon-50);
+            border-color: var(--salmon-400);
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-top: 15px;
+        }
+
+        .breadcrumb-link {
+            color: var(--salmon-600);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-link:hover {
+            color: var(--salmon-700);
+        }
+
+        /* Course Detail Specific Styles */
+        .course-detail-page {
+            background: var(--salmon-50);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(249, 115, 22, 0.05);
+            border: 1px solid var(--salmon-100);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--salmon-800);
+            margin-bottom: 8px;
+            text-align: left; /* Ensure left alignment as per image */
+        }
+
+        .detail-instructor {
+            font-size: 1rem;
+            color: var(--salmon-700);
+            margin-bottom: 10px;
+            text-align: left; /* Ensure left alignment as per image */
+        }
+
+        .detail-headline {
+            font-size: 1.1rem;
+            color: var(--salmon-600);
+            margin-bottom: 15px;
+            font-weight: 500;
+            text-align: left; /* Ensure left alignment as per image */
+        }
+
+        .detail-description {
+            color: var(--salmon-700);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: left; /* Ensure left alignment as per image */
+        }
+
+        .detail-meta-text {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+            margin-bottom: 15px;
+            border-top: 1px solid var(--salmon-100);
+            padding-top: 15px;
+            font-size: 0.9rem;
+            color: var(--salmon-700);
+            text-align: left; /* Ensure left alignment as per image */
+        }
+
+        .detail-meta-text span strong {
+            color: var(--salmon-800);
+            font-weight: 600;
+        }
+
+        .detail-price-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--salmon-100);
+        }
+
+        .detail-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--salmon-900);
+        }
+
+        /* Recommended Courses Section */
+        .recommendations-section {
+            margin-top: 40px;
+        }
+
+        .recommendations-section h2 {
+            font-size: 1.8rem;
+            color: var(--salmon-800);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .recommended-courses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .recommended-course-card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.05);
+            border: 1px solid var(--salmon-100);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .recommended-course-card:hover {
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .recommended-course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--salmon-800);
+            margin-bottom: 4px;
+            transition: color 0.3s ease;
+            text-align: left; /* Ensure left alignment */
+        }
+
+        .recommended-course-title:hover {
+            color: var(--salmon-600);
+        }
+
+        .recommended-course-instructor {
+            color: var(--salmon-600);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            text-align: left; /* Ensure left alignment */
+        }
+
+        .recommended-course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--salmon-600);
+            margin-top: auto;
+        }
+
+        .recommended-course-meta span {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .recommended-course-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--salmon-800);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--salmon-600);
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .detail-card {
+                padding: 15px;
+            }
+
+            .detail-title {
+                font-size: 1.8rem;
+            }
+
+            .detail-meta-text {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .detail-price-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .recommended-courses-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">🎓 E-Learning</a>
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn btn-ghost">Home</a>
+                    <a href="course-list.html" class="btn btn-ghost">Courses</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="course-detail-page">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="course-list.html" class="breadcrumb-link">← Back to Courses</a>
+            </div>
+
+            <div id="main-course-detail-section">
+                <!-- Main course details will be dynamically populated here -->
+                <div class="empty-state" id="loading-state">
+                    <div class="empty-icon">⏳</div>
+                    <h3>Loading course details...</h3>
+                    <p>Please wait a moment.</p>
+                </div>
+            </div>
+
+            <div class="recommendations-section">
+                <h2>More Courses You Might Like</h2>
+                <div class="recommended-courses-container" id="recommended-courses-container">
+                    <!-- Recommended course cards will be dynamically populated here -->
+                    <div class="empty-state" id="loading-recommendations-state">
+                        <div class="empty-icon">⏳</div>
+                        <p>Loading recommendations...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allCourses = []; // Stores parsed data from website_dataset.csv
+        let recommendationsMap = {}; // Stores parsed data from recommendation_mapping.json
+
+        // Function to parse CSV data
+        async function parseCSV(csvString) {
+            const lines = csvString.trim().split('\n');
+            const headers = lines[0].split(',').map(header => header.trim());
+            const courses = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                let line = lines[i];
+                const fields = [];
+                let inQuote = false;
+                let currentField = '';
+
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    if (char === '"') {
+                        if (j + 1 < line.length && line[j+1] === '"') {
+                            currentField += '"';
+                            j++;
+                        } else {
+                            inQuote = !inQuote;
+                        }
+                    } else if (char === ',' && !inQuote) {
+                        fields.push(currentField);
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+                fields.push(currentField);
+
+                if (fields.length === headers.length) {
+                    const course = {};
+                    headers.forEach((header, index) => {
+                        let value = fields[index];
+                        if (header === 'id' || header === 'num_subscribers' || header === 'num_reviews' || header === 'num_comments' || header === 'num_lectures' || header === 'content_length_min') {
+                            course[header] = parseInt(parseFloat(value));
+                        } else if (header === 'avg_rating' || header === 'price') {
+                            course[header] = parseFloat(value);
+                        } else if (header === 'is_paid') {
+                            course[header] = value === 'True';
+                        } else {
+                            course[header] = value;
+                        }
+                    });
+                    courses.push(course);
+                }
+            }
+            return courses;
+        }
+
+        // Function to fetch and parse JSON data
+        async function fetchJSON(filePath) {
+            const response = await fetch(filePath);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        }
+
+        // Utility function to format numbers for display
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+
+        // Convert minutes to a more readable duration format
+        function formatDuration(minutes) {
+            if (minutes === null || isNaN(minutes)) return 'N/A';
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+            if (hours > 0 && remainingMinutes > 0) {
+                return `${hours}h ${remainingMinutes}m`;
+            } else if (hours > 0) {
+                return `${hours}h`;
+            } else {
+                return `${remainingMinutes}m`;
+            }
+        }
+
+        // Render the main course details based on the provided layout
+        function renderCourseDetail(course) {
+            const mainDetailSection = document.getElementById('main-course-detail-section');
+            mainDetailSection.innerHTML = ''; // Clear loading state
+
+            if (!course) {
+                mainDetailSection.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😔</div>
+                        <h3>Course not found</h3>
+                        <p>The requested course could not be loaded.</p>
+                        <a href="course-list.html" class="btn btn-primary" style="margin-top: 20px;">Back to Courses</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const priceDisplay = course.is_paid ? `$${parseFloat(course.price).toFixed(2)}` : 'Free';
+            const publishedDate = course.published_time ? new Date(course.published_time).toLocaleDateString() : 'N/A';
+
+            mainDetailSection.innerHTML = `
+                <div class="detail-card">
+                    <div class="detail-info">
+                        <h1 class="detail-title">${course.title || 'N/A'}</h1>
+                        <p class="detail-instructor">By <span id="course-detail-instructor">${course.instructor_name || 'Unknown'}</span></p>
+                        <p class="detail-headline">${course.headline || 'No headline available.'}</p>
+                        <p class="detail-description">${course.description || 'No detailed description available.'}</p>
+
+                        <div class="detail-meta-text">
+                            <span>⭐ <strong>Rating:</strong> <span id="course-detail-rating">${course.avg_rating ? course.avg_rating.toFixed(1) : 'N/A'}</span></span>
+                            <span>👥 <strong>Students:</strong> <span id="course-detail-students">${course.num_subscribers ? formatNumber(course.num_subscribers) : 'N/A'}</span></span>
+                            <span>⏱️ <strong>Duration:</strong> <span id="course-detail-duration">${formatDuration(course.content_length_min)}</span></span>
+                            <span>📚 <strong>Lectures:</strong> <span id="course-detail-lectures">${course.num_lectures || 'N/A'}</span></span>
+                            <span>🗣️ <strong>Language:</strong> <span id="course-detail-language">${course.language || 'N/A'}</span></span>
+                            <span>🏷️ <strong>Category:</strong> <span id="course-detail-category">${course.category || 'N/A'}</span></span>
+                            <span>🧩 <strong>Subcategory:</strong> <span id="course-detail-subcategory">${course.subcategory || 'N/A'}</span></span>
+                            <span>🎯 <strong>Topic:</strong> <span id="course-detail-topic">${course.topic || 'N/A'}</span></span>
+                            <span>🗓️ <strong>Published:</strong> <span id="course-detail-published">${publishedDate}</span></span>
+                            <span>🔄 <strong>Last Update:</strong> <span id="course-detail-last-update">${course.last_update_date || 'N/A'}</span></span>
+                        </div>
+
+                        <div class="detail-price-wrapper">
+                            <div class="detail-price">${priceDisplay}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create a single recommended course card HTML element
+        function createRecommendedCourseCard(course) {
+            const card = document.createElement('a'); // Use <a> for clickable card
+            card.href = `course-detail.html?id=${course.id}`; // Link to the detail page of the recommended course
+            card.className = 'recommended-course-card';
+
+            // Format price for recommended card
+            const priceDisplay = course.is_paid ? `$${parseFloat(course.price).toFixed(2)}` : 'Free';
+
+            card.innerHTML = `
+                <h3 class="recommended-course-title">${course.title || 'N/A'}</h3>
+                <p class="recommended-course-instructor">By ${course.instructor_name || 'Unknown'}</p>
+                <div class="recommended-course-meta">
+                    <span>⭐ ${course.avg_rating ? course.avg_rating.toFixed(1) : 'N/A'}</span>
+                    <span>👥 ${course.num_subscribers ? formatNumber(course.num_subscribers) : 'N/A'}</span>
+                    <span>⏱️ ${formatDuration(course.content_length_min)}</span>
+                </div>
+                <div class="recommended-course-price">${priceDisplay}</div>
+            `;
+            return card;
+        }
+
+        // Render the recommended courses
+        function renderRecommendedCourses(courses) {
+            const container = document.getElementById('recommended-courses-container');
+            container.innerHTML = ''; // Clear previous recommendations or loading state
+
+            if (!courses || courses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💡</div>
+                        <h3>No recommendations found</h3>
+                        <p>We couldn't find any courses similar to this one.</p>
+                    </div>
+                `;
+            } else {
+                courses.forEach(course => {
+                    const courseElement = createRecommendedCourseCard(course);
+                    container.appendChild(courseElement);
+                });
+            }
+        }
+
+        // Main function to load course and recommendations
+        async function loadCourseAndRecommendations() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = parseInt(urlParams.get('id'));
+
+            if (isNaN(courseId)) {
+                document.getElementById('main-course-detail-section').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🤔</div>
+                        <h3>Invalid Course ID</h3>
+                        <p>Please navigate from the <a href="course-list.html">course list</a>.</p>
+                    </div>
+                `;
+                document.getElementById('recommended-courses-container').innerHTML = '';
+                return;
+            }
+
+            try {
+                // 1. Fetch main course data (website_dataset.csv)
+                const csvResponse = await fetch('website_dataset.csv');
+                if (!csvResponse.ok) {
+                    throw new Error(`HTTP error! status: ${csvResponse.status}`);
+                }
+                const csvText = await csvResponse.text();
+                allCourses = await parseCSV(csvText);
+
+                // 2. Find the current course
+                const currentCourse = allCourses.find(course => course.id === courseId);
+                renderCourseDetail(currentCourse); // Use the new render function for main details
+
+                // 3. Fetch recommendations data (recommendation_mapping.json)
+                const jsonResponse = await fetch('recommendation_mapping.json');
+                if (!jsonResponse.ok) {
+                    throw new Error(`HTTP error! status: ${jsonResponse.status}`);
+                }
+                recommendationsMap = await fetchJSON('recommendation_mapping.json');
+
+                // --- UPDATED DEBUGGING LOGS AND KEY LOOKUP HERE ---
+                console.log("--- Debugging Recommendations ---");
+                console.log("Current course ID (from URL, as number):", courseId, "Type:", typeof courseId);
+
+                // Construct the key to match the JSON format (e.g., "51942.0")
+                const lookupKey = courseId.toFixed(1);
+                console.log("Attempting lookup with key:", lookupKey, "Type:", typeof lookupKey);
+                console.log("Recommendations Map loaded:", recommendationsMap);
+
+                // Check if the key exists in the map and its type
+                if (Object.keys(recommendationsMap).length > 0) {
+                    console.log("First key in recommendationsMap:", Object.keys(recommendationsMap)[0], "Type:", typeof Object.keys(recommendationsMap)[0]);
+                }
+                console.log("Result of lookup:", recommendationsMap[lookupKey]);
+                // --- END DEBUGGING LOGS ---
+
+                // 4. Get recommended course IDs for the current course using the corrected lookup key
+                const recommendedIds = recommendationsMap[lookupKey];
+
+                // 5. Get details for recommended courses from allCourses
+                const recommendedCoursesDetails = (recommendedIds || [])
+                    .map(id => allCourses.find(course => course.id === id))
+                    .filter(Boolean); // Filter out any undefined courses if their ID wasn't found
+
+                console.log("Final recommended courses details to render:", recommendedCoursesDetails);
+
+                renderRecommendedCourses(recommendedCoursesDetails);
+
+            } catch (error) {
+                console.error("Error loading course details or recommendations:", error);
+                document.getElementById('main-course-detail-section').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❌</div>
+                        <h3>Failed to load course data</h3>
+                        <p>Please ensure 'website_dataset.csv' and 'recommendation_mapping.json' are correctly placed and accessible.</p>
+                        <a href="course-list.html" class="btn btn-primary" style="margin-top: 20px;">Back to Courses</a>
+                    </div>
+                `;
+                document.getElementById('recommended-courses-container').innerHTML = '';
+            }
+        }
+
+        // Initial load on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', loadCourseAndRecommendations);
+    </script>
+</body>
+</html>
